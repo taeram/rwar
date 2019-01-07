@@ -11,6 +11,8 @@ framework:
         cookie_secure: auto
         cookie_samesite: lax
 
+    translator: { fallbacks: ["%locale%"] }
+
     #esi: true
     #fragments: true
     php_errors:
