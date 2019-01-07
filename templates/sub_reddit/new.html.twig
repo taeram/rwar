@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}New SubReddit{% endblock %}
+
+{% block body %}
+    <h1>Create new SubReddit</h1>
+
+    {{ include('sub_reddit/_form.html.twig') }}
+
+    <a href="{{ path('sub_reddit_index') }}">back to list</a>
+{% endblock %}

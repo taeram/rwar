@@ -1,0 +1,35 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}SubReddit index{% endblock %}
+
+{% block body %}
+    <h1>SubReddit index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sub_reddit in sub_reddits %}
+            <tr>
+                <td>{{ sub_reddit.id }}</td>
+                <td>{{ sub_reddit.name }}</td>
+                <td>
+                    <a href="{{ path('sub_reddit_show', {'id': sub_reddit.id}) }}">show</a>
+                    <a href="{{ path('sub_reddit_edit', {'id': sub_reddit.id}) }}">edit</a>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="3">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('sub_reddit_new') }}">Create new</a>
+{% endblock %}
