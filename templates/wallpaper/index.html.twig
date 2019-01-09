@@ -3,9 +3,18 @@
 {% block title %}RWAR!{% endblock %}
 
 {% block body %}
-    <h1>/r/{{ wallpaper.subreddit.name }}</h1>
+    <h1 class="mt-5">/r/{{ wallpaper.subreddit.name }}</h1>
 
     <div style="width: 75%; margin: auto">
         <img src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;" />
+
+        <div style="text-align: center">
+            <a href="{{ url('wallpaper_favourite', {id: wallpaper.id}) }}">Favourite</a>
+            |
+            <a href="{{ url('wallpaper_reject', {id: wallpaper.id}) }}">Reject</a>
+            |
+            <a href="{{ url('wallpaper_set', {id: wallpaper.id}) }}">Set</a>
+        </div>
     </div>
+
 {% endblock %}
