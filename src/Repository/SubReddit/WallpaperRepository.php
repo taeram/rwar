@@ -19,7 +19,8 @@ class WallpaperRepository extends ServiceEntityRepository
         parent::__construct($registry, Wallpaper::class);
     }
 
-    public function findByUrl($url) {
+    public function findByUrl($url)
+    {
         return $this->createQueryBuilder('Wallpaper')
             ->andWhere('Wallpaper.hash = :hash')
             ->setParameter('hash', hash('sha256', $url))
@@ -27,10 +28,17 @@ class WallpaperRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-    public function findFirstUnrated() {
-        return $this->createQueryBuilder('Wallpaper')
-            ->andWhere('Wallpaper.rating = 0')
-            ->setMaxResults(1)
+    public function findFirstUnrated($id)
+    {
+        $query = $this->createQueryBuilder('Wallpaper')
+            ->andWhere('Wallpaper.rating = 0');
+
+        if ($id !== null) {
+            $query->andWhere('Wallpaper.subreddit = :subredditId')
+                ->setParameter('subredditId', $id);
+        }
+
+        return $query->setMaxResults(1)
             ->getQuery()
             ->getOneOrNullResult();
     }

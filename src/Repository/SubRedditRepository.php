@@ -18,4 +18,16 @@ class SubRedditRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, SubReddit::class);
     }
+
+    public function findCountUnrated($id)
+    {
+        return $this->createQueryBuilder('SubReddit')
+            ->select('COUNT(Wallpaper.id)')
+            ->join('SubReddit.wallpapers', 'Wallpaper')
+            ->andWhere('Wallpaper.rating = 0')
+            ->andWhere('SubReddit.id = :subredditId')
+            ->setParameter('subredditId', $id)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

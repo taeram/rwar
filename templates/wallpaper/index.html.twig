@@ -3,18 +3,28 @@
 {% block title %}RWAR!{% endblock %}
 
 {% block body %}
-    <h1 class="mt-5">/r/{{ wallpaper.subreddit.name }}</h1>
+    <select id="subreddit" style="margin-top: 20px">
+        {% for subreddit in subreddits %}
+            <option
+                value="{{ subreddit.id }}"
+                {% if subreddit.name == wallpaper.subreddit.name %}
+                    selected="selected"
+                {% endif %}>
+                /r/{{ subreddit.name }}
+            </option>
+        {% endfor %}
+    </select>
+    ({{ subreddit_num_unrated }} unrated)
 
     <div style="width: 75%; margin: auto">
-        <img src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;" />
-
         <div style="text-align: center">
-            <a href="{{ url('wallpaper_favourite', {id: wallpaper.id}) }}">Favourite</a>
+            <a href="{{ url('wallpaper_favourite', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Favourite</a>
             |
-            <a href="{{ url('wallpaper_reject', {id: wallpaper.id}) }}">Reject</a>
+            <a href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Reject</a>
             |
-            <a href="{{ url('wallpaper_set', {id: wallpaper.id}) }}">Set</a>
+            <a href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Set</a>
         </div>
+        <img src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;" />
     </div>
 
 {% endblock %}

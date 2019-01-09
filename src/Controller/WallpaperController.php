@@ -13,22 +13,28 @@ use Symfony\Component\Routing\Annotation\Route;
 class WallpaperController extends AbstractController
 {
     /**
-     * @Route("/", name="wallpaper")
+     * @Route("/{id}", name="wallpaper", defaults={"id": null})
      */
-    public function index()
+    public function index($id = null)
     {
+        /** @var \App\Entity\SubReddit\Wallpaper $wallpaper */
+        $wallpaper = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->findFirstUnrated($id);
+        $subredditNumUnrated = $this->getDoctrine()->getRepository(\App\Entity\SubReddit::class)->findCountUnrated($wallpaper->getSubreddit()->getId());
+
         return $this->render(
             'wallpaper/index.html.twig',
             [
-                'wallpaper' => $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->findFirstUnrated(),
+                'subreddits' => $this->getDoctrine()->getRepository(\App\Entity\SubReddit::class)->findAll(),
+                'subreddit_num_unrated' => $subredditNumUnrated,
+                'wallpaper' => $wallpaper,
             ]
         );
     }
 
     /**
-     * @Route("/favourite/{id}", name="wallpaper_favourite")
+     * @Route("/favourite/{id}/{subredditId}", name="wallpaper_favourite")
      */
-    public function favourite($id)
+    public function favourite($id, $subredditId)
     {
         $wallpaper = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->find($id);
         if ($wallpaper !== null) {
@@ -37,13 +43,13 @@ class WallpaperController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
         }
 
-        return $this->redirectToRoute('wallpaper');
+        return $this->redirectToRoute('wallpaper', ['id' => $subredditId]);
     }
 
     /**
-     * @Route("/reject/{id}", name="wallpaper_reject")
+     * @Route("/reject/{id}/{subredditId}", name="wallpaper_reject")
      */
-    public function reject($id)
+    public function reject($id, $subredditId)
     {
         $wallpaper = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->find($id);
         if ($wallpaper !== null) {
@@ -56,14 +62,14 @@ class WallpaperController extends AbstractController
             $filesystem->remove($imageFilePath);
         }
 
-        return $this->redirectToRoute('wallpaper');
+        return $this->redirectToRoute('wallpaper', ['id' => $subredditId]);
     }
 
 
     /**
-     * @Route("/set/{id}", name="wallpaper_set")
+     * @Route("/set/{id}/{subredditId}", name="wallpaper_set")
      */
-    public function set($id, KernelInterface $kernel)
+    public function set($id, $subredditId, KernelInterface $kernel)
     {
         $wallpaper = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->find($id);
         if ($wallpaper !== null) {
@@ -82,6 +88,6 @@ class WallpaperController extends AbstractController
             $application->run($input, $output);
         }
 
-        return $this->redirectToRoute('wallpaper');
+        return $this->redirectToRoute('wallpaper', ['id' => $subredditId]);
     }
 }
