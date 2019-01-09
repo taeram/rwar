@@ -173,13 +173,9 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
                     continue;
                 }
                 $imageUrl = $item['data']['url'];
-                $imageUrl = str_replace('&amp;', '&', $imageUrl);
 
                 // Have we already seen this image?
-                $imageHash = hash('sha256', $imageUrl);
-                $wallpaper = $this->doctrine->getRepository(\App\Entity\SubReddit\Wallpaper::class)->findOneBy(
-                    ['hash' => $imageHash]
-                );
+                $wallpaper = $this->doctrine->getRepository(\App\Entity\SubReddit\Wallpaper::class)->findByUrl($imageUrl);
                 if ($wallpaper !== null) {
                     $output->write('s');
                     continue;
@@ -188,7 +184,6 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
                 // Download the image
                 $imageTempPath = $this->projectDir.'/var/tmp/image';
                 if ($this->downloadImage($imageUrl, $imageTempPath) === false) {
-                    $output->writeln("Could not download: $imageUrl");
                     $output->write('!');
                     continue;
                 }
@@ -218,6 +213,9 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
      */
     protected function downloadImage($imageUrl, $imageTempPath)
     {
+        // Tidy the url
+        $imageUrl = str_replace('&amp;', '&', $imageUrl);
+
         // Download the file
         try {
             $response = $this->guzzle->request('GET', $imageUrl);
