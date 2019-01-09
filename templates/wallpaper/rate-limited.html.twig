@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RWAR!{% endblock %}
+
+{% block body %}
+    <h1>Rate Limited</h1>
+
+    <p>
+        The request has been rate-limited, waiting 60 seconds before retrying...
+    </p>
+
+    <script>
+        (function () {
+            setTimeout(function () {
+                window.location.href = window.location.href;
+            }, 60000);
+        })();
+    </script>
+{% endblock %}

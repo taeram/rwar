@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RWAR!{% endblock %}
+
+{% block body %}
+    <h1>/r/{{ subreddit }}</h1>
+{{  dump(image_urls) }}
+    {% for url in image_urls %}
+        <img src="{{ url }}" style="width: 25%; display: inline-block; padding: 10px; border: 1px solid #ddd" />
+    {% endfor %}
+{% endblock %}
