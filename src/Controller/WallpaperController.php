@@ -12,14 +12,10 @@ class WallpaperController extends AbstractController
      */
     public function index()
     {
-
-        // Send the list of thumbnails to the view for the user to reject or apply
-
         return $this->render(
             'wallpaper/index.html.twig',
             [
-                'subreddit' => $subreddit->getName(),
-                'image_urls' => $imageUrls,
+                'wallpaper' => $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->findFirstUnrated(),
             ]
         );
     }

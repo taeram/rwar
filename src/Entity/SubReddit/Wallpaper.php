@@ -27,6 +27,11 @@ class Wallpaper
      */
     private $hash;
 
+    /**
+     * @ORM\Column(type="integer")
+     */
+    private $rating;
+
     public function __construct(SubReddit $subreddit, $url)
     {
         $this->subreddit = $subreddit;
@@ -66,4 +71,17 @@ class Wallpaper
     public function getImageUrl() {
         return '/subreddits/' . $this->subreddit->getName() . '/' . $this->hash;
     }
+
+    public function getRating(): ?int
+    {
+        return $this->rating;
+    }
+
+    public function setRating(int $rating): self
+    {
+        $this->rating = $rating;
+
+        return $this;
+    }
+
 }

@@ -26,4 +26,12 @@ class WallpaperRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findFirstUnrated() {
+        return $this->createQueryBuilder('Wallpaper')
+            ->andWhere('Wallpaper.rating = 0')
+            ->setMaxResults(1)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
 }
