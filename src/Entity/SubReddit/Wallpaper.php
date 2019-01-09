@@ -23,9 +23,16 @@ class Wallpaper
     private $subreddit;
 
     /**
-     * @ORM\Column(type="string", length=2048)
+     * @ORM\Column(type="string", length=64, unique=true)
      */
-    private $url;
+    private $hash;
+
+    public function __construct(SubReddit $subreddit, $url)
+    {
+        $this->subreddit = $subreddit;
+        $this->url = $url;
+        $this->hash = hash('sha256', $url);
+    }
 
     public function getId(): ?int
     {
@@ -44,15 +51,19 @@ class Wallpaper
         return $this;
     }
 
-    public function getUrl(): ?string
+    public function getHash(): ?string
     {
-        return $this->url;
+        return $this->hash;
     }
 
-    public function setUrl(string $url): self
+    public function setHash(string $hash): self
     {
-        $this->url = $url;
+        $this->hash = $hash;
 
         return $this;
+    }
+
+    public function getImageUrl() {
+        return '/subreddits/' . $this->subreddit->getName() . '/' . $this->hash;
     }
 }
