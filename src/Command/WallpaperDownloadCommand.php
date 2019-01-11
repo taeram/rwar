@@ -105,6 +105,17 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
         parent::initialize($input, $output);
     }
 
+    /**
+     * Execute the command.
+     *
+     * @param InputInterface $input The input interface
+     * @param OutputInterface $output The output interface
+     *
+     * @return bool|int|null
+     *
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Psr\SimpleCache\InvalidArgumentException
+     */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         // Download the latest wallpapers from each subreddit
@@ -144,7 +155,7 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
 
                         $output->writeln($e->getMessage());
 
-                        return;
+                        return false;
                     }
                 }
 
@@ -156,7 +167,7 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
                 if ($response->getStatusCode() !== 200) {
                     $output->writeln('Error retrieving JSON: '.$response->getStatusCode());
 
-                    return;
+                    return false;
                 }
                 $json = $response->getBody()->getContents();
 
@@ -199,6 +210,9 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
                 $this->filesystem->rename($imageTempPath, $imagePath, true);
             }
         }
+        $output->writeln('');
+
+        return true;
     }
 
     /**

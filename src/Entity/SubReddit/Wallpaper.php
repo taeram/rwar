@@ -30,7 +30,7 @@ class Wallpaper
     /**
      * @ORM\Column(type="integer")
      */
-    private $rating;
+    private $rating = 0;
 
     public function __construct(SubReddit $subreddit, $url)
     {

@@ -13,13 +13,31 @@ use Symfony\Component\Routing\Annotation\Route;
 class WallpaperController extends AbstractController
 {
     /**
-     * @Route("/{id}", name="wallpaper", defaults={"id": null})
+     * @Route("/wallpapers/{id}", name="wallpaper", defaults={"id": null})
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      */
     public function index($id = null)
     {
+        // Select a random subreddit
+        if ($id === null) {
+            $subreddit = $this->getDoctrine()->getRepository(\App\Entity\SubReddit::class)->findRandomUnrated();
+            if (!$subreddit) {
+                throw new \Exception('No unrated wallpapers found, please run ./bin/console wallpaper:download');
+            }
+
+            return $this->redirectToRoute('wallpaper', ['id' => $subreddit->getId()]);
+        }
+
         /** @var \App\Entity\SubReddit\Wallpaper $wallpaper */
         $wallpaper = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->findFirstUnrated($id);
-        $subredditNumUnrated = $this->getDoctrine()->getRepository(\App\Entity\SubReddit::class)->findCountUnrated($wallpaper->getSubreddit()->getId());
+        if (!$wallpaper) {
+            return $this->redirectToRoute('wallpaper');
+        }
+        $subredditNumUnrated = $this->getDoctrine()->getRepository(\App\Entity\SubReddit::class)->findCountUnrated(
+            $wallpaper->getSubreddit()->getId()
+        );
 
         return $this->render(
             'wallpaper/index.html.twig',
@@ -58,7 +76,7 @@ class WallpaperController extends AbstractController
             $this->getDoctrine()->getManager()->flush();
 
             $filesystem = new Filesystem();
-            $imageFilePath = $this->getParameter('kernel.project_dir') . '/public' . $wallpaper->getImageUrl();
+            $imageFilePath = $this->getParameter('kernel.project_dir').'/public'.$wallpaper->getImageUrl();
             $filesystem->remove($imageFilePath);
         }
 
@@ -68,6 +86,8 @@ class WallpaperController extends AbstractController
 
     /**
      * @Route("/set/{id}/{subredditId}", name="wallpaper_set")
+     *
+     * @throws \Exception
      */
     public function set($id, $subredditId, KernelInterface $kernel)
     {
@@ -76,13 +96,15 @@ class WallpaperController extends AbstractController
             $application = new Application($kernel);
             $application->setAutoExit(false);
 
-            $imageFilePath = $this->getParameter('kernel.project_dir') . '/public' . $wallpaper->getImageUrl();
-            $input = new ArrayInput(array(
-                'command' => 'wallpaper:set',
-                'input-file' => $imageFilePath,
-                'watermark-text' => '/r/' . $wallpaper->getSubreddit()->getName(),
-                'output-file' => getenv('HOME') . '/Pictures/Wallpaper/wallpaper.jpg',
-            ));
+            $imageFilePath = $this->getParameter('kernel.project_dir').'/public'.$wallpaper->getImageUrl();
+            $input = new ArrayInput(
+                array(
+                    'command' => 'wallpaper:set',
+                    'input-file' => $imageFilePath,
+                    'watermark-text' => '/r/'.$wallpaper->getSubreddit()->getName(),
+                    'output-file' => getenv('HOME').'/Pictures/Wallpaper/wallpaper.jpg',
+                )
+            );
 
             $output = new NullOutput();
             $application->run($input, $output);

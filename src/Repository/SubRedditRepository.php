@@ -19,15 +19,44 @@ class SubRedditRepository extends ServiceEntityRepository
         parent::__construct($registry, SubReddit::class);
     }
 
-    public function findCountUnrated($id)
-    {
+    protected function getUnratedQueryBuilder() {
         return $this->createQueryBuilder('SubReddit')
+            ->leftJoin('SubReddit.wallpapers', 'Wallpaper')
+            ->andWhere('Wallpaper.rating = 0');
+    }
+
+    /**
+     * Find the number of unrated wallpapers for the selected subreddit.
+     *
+     * @param integer $id The subreddit id.
+     *
+     * @return int|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findCountUnrated($id): ?int
+    {
+        return $this->getUnratedQueryBuilder()
             ->select('COUNT(Wallpaper.id)')
-            ->join('SubReddit.wallpapers', 'Wallpaper')
-            ->andWhere('Wallpaper.rating = 0')
             ->andWhere('SubReddit.id = :subredditId')
             ->setParameter('subredditId', $id)
             ->getQuery()
             ->getSingleScalarResult();
+    }
+
+    /**
+     * Find a random subreddit which has unrated wallpapers.
+     *
+     * @return \App\Entity\SubReddit|null
+     *
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     */
+    public function findRandomUnrated() {
+        $subreddits = $this->getUnratedQueryBuilder()
+            ->select('DISTINCT SubReddit')
+            ->getQuery()
+            ->getResult();
+
+        return $subreddits[random_int(0, count($subreddits) - 1)];
     }
 }
