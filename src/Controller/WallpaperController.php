@@ -13,6 +13,14 @@ use Symfony\Component\Routing\Annotation\Route;
 class WallpaperController extends AbstractController
 {
     /**
+     * @Route("/", name="root")
+     */
+    public function root($id = null)
+    {
+        return $this->redirectToRoute('wallpaper');
+    }
+
+    /**
      * @Route("/wallpapers/{id}", name="wallpaper", defaults={"id": null})
      *
      * @throws \Doctrine\ORM\NonUniqueResultException
@@ -28,6 +36,12 @@ class WallpaperController extends AbstractController
             }
 
             return $this->redirectToRoute('wallpaper', ['id' => $subreddit->getId()]);
+        }
+
+        // Handle unknown subreddits
+        $subreddit = $this->getDoctrine()->getRepository(\App\Entity\SubReddit::class)->find($id);
+        if (!$subreddit) {
+            return $this->redirectToRoute('wallpaper');
         }
 
         /** @var \App\Entity\SubReddit\Wallpaper $wallpaper */
