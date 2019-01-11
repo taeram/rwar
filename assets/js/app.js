@@ -18,9 +18,10 @@ $(document).ready(function () {
     });
 
     // Ensure the image fits on the screen
-    var imageHeight = $('#wallpaper-image').height();
-    var imageWidth = $('#wallpaper-image').width();
-    var containerHeight = document.documentElement.clientHeight - $('#subreddit-name').height() - $('#image-resolution').height() - 20;
+    let $wallpaperImage = $('#wallpaper-image');
+    const imageHeight = $wallpaperImage.height();
+    let imageWidth = $wallpaperImage.width();
+    const containerHeight = document.documentElement.clientHeight - $('#subreddit-name').height() - $('#image-resolution').height() - 20;
     if (imageHeight > containerHeight) {
         imageWidth = Math.floor((imageWidth / imageHeight) * containerHeight);
         $('#wallpaper-image').css({
@@ -30,11 +31,11 @@ $(document).ready(function () {
     }
 
     // Show the image resolution
-    var img = new Image();
+    const img = new Image();
     img.onload = function () {
         $('#image-resolution').html(this.width + 'x' + this.height);
     };
-    img.src = $('#wallpaper-image').attr('src');
+    img.src = $wallpaperImage.attr('src');
 
     // Hotkeys
     $(document).bind('keydown', null, function (e) {

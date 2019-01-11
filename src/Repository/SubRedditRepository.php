@@ -19,7 +19,8 @@ class SubRedditRepository extends ServiceEntityRepository
         parent::__construct($registry, SubReddit::class);
     }
 
-    protected function getUnratedQueryBuilder() {
+    protected function getUnratedQueryBuilder()
+    {
         return $this->createQueryBuilder('SubReddit')
             ->leftJoin('SubReddit.wallpapers', 'Wallpaper')
             ->andWhere('Wallpaper.rating = 0');
@@ -49,9 +50,10 @@ class SubRedditRepository extends ServiceEntityRepository
      *
      * @return \App\Entity\SubReddit|null
      *
-     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Exception
      */
-    public function findRandomUnrated() {
+    public function findRandomUnrated()
+    {
         $subreddits = $this->getUnratedQueryBuilder()
             ->select('DISTINCT SubReddit')
             ->getQuery()

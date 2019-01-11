@@ -4,6 +4,7 @@
 
 {% block body %}
     <div id="subreddit-name">
+        <label for="subreddit"></label>
         <select id="subreddit" style="margin-top: 20px">
             {% for subreddit in subreddits %}
                 <option
@@ -18,7 +19,7 @@
         ({{ subreddit_num_unrated }} unrated)
     </div>
 
-    <div style="margin: auto; margin-top: -25px; text-align: center">
+    <div style="margin: -25px auto auto;text-align: center">
         <div style="text-align: center">
             <a id="link-favourite" href="{{ url('wallpaper_favourite', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Favourite</a>
             |
