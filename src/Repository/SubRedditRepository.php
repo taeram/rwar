@@ -57,6 +57,10 @@ class SubRedditRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
+        if (count($subreddits) === 0) {
+            return null;
+        }
+
         return $subreddits[random_int(0, count($subreddits) - 1)];
     }
 }
