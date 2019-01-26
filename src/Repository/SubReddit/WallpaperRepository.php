@@ -42,4 +42,22 @@ class WallpaperRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+    public function findCountFavourites() {
+        return $this->createQueryBuilder('Wallpaper')
+            ->select('COUNT(Wallpaper.id)')
+            ->andWhere('Wallpaper.rating = 1')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function findAllFavourites($pageNum, $wallpapersPerPage) {
+        return $this->createQueryBuilder('Wallpaper')
+            ->andWhere('Wallpaper.rating = 1')
+            ->orderBy('Wallpaper.id', 'DESC')
+            ->getQuery()
+            ->setFirstResult(($pageNum - 1 ) * $wallpapersPerPage)
+            ->setMaxResults($wallpapersPerPage)
+            ->getResult();
+    }
 }

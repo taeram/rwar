@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}RWAR!{% endblock %}
+
+{% block body %}
+    {% for wallpaper in wallpapers %}
+            <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;"/>
+            <div style="text-align: center">
+                <a id="link-reject" href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id, return_url: 'wallpaper_favourites', page_num: page_num}) }}">Reject</a>
+                |
+                <a id="link-set" href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id, return_url: 'wallpaper_favourites', page_num: page_num}) }}">Set</a>
+            </div>
+    {%  endfor %}
+
+    <div style="text-align: center; margin-top: 20px">
+        {%  if page_num > 1 %}
+            <a href="{{ url('wallpaper_favourites', {pageNum: (page_num - 1) }) }}">&laquo; Prev</a>
+        {%  else %}
+            <span style="display: inline-block">&laquo; Prev</span>
+        {%  endif %}
+
+        {%  for i in 1..num_pages %}
+            {%  if i == page_num %}
+                <span style="font-weight: bold; display: inline-block">{{  i  }}</span>
+            {%  else %}
+                <a href="{{ url('wallpaper_favourites', {pageNum: i}) }}">{{ i }}</a>
+            {%  endif %}
+        {%  endfor %}
+
+        {%  if page_num < num_pages %}
+            <a href="{{ url('wallpaper_favourites', {pageNum: (page_num + 1) }) }}">Next &raquo;</a>
+        {%  else %}
+            <span style="display: inline-block">Next &raquo;</span>
+        {%  endif %}
+    </div>
+{% endblock %}

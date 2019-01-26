@@ -83,7 +83,7 @@ class WallpaperController extends AbstractController
      */
     public function reject($id, $subredditId)
     {
-        $wallpaper = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->find($id);
+      $wallpaper = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->find($id);
         if ($wallpaper !== null) {
             $wallpaper->setRating(-1);
             $this->getDoctrine()->getManager()->persist($wallpaper);
@@ -94,7 +94,9 @@ class WallpaperController extends AbstractController
             $filesystem->remove($imageFilePath);
         }
 
-        return $this->redirectToRoute('wallpaper', ['id' => $subredditId]);
+        $returnUrl = $_GET['return_url'] ?? 'wallpaper';
+        $pageNum = $_GET['page_num'] ?? null;
+        return $this->redirectToRoute($returnUrl, ['id' => $subredditId, 'pageNum' => $pageNum]);
     }
 
 
@@ -124,6 +126,36 @@ class WallpaperController extends AbstractController
             $application->run($input, $output);
         }
 
-        return $this->redirectToRoute('wallpaper', ['id' => $subredditId]);
+        $returnUrl = $_GET['return_url'] ?? 'wallpaper';
+        $pageNum = $_GET['page_num'] ?? null;
+        return $this->redirectToRoute($returnUrl, ['id' => $subredditId, 'pageNum' => $pageNum]);
+    }
+
+    /**
+     * @Route("/favourites/{pageNum}", name="wallpaper_favourites", defaults={"pageNum": 1})
+     *
+     * @throws \Exception
+     */
+    public function favourites($pageNum = 1)
+    {
+        $wallpapersPerPage = 5;
+        $numWallpapers = $this->getDoctrine()->getRepository(
+            \App\Entity\SubReddit\Wallpaper::class
+        )->findCountFavourites();
+        $numPages = ceil($numWallpapers / $wallpapersPerPage);
+        $wallpapers = $this->getDoctrine()->getRepository(\App\Entity\SubReddit\Wallpaper::class)->findAllFavourites(
+            $pageNum,
+            $wallpapersPerPage
+        );
+
+
+        return $this->render(
+            'wallpaper/favourites.html.twig',
+            [
+                'wallpapers' => $wallpapers,
+                'page_num' => $pageNum,
+                'num_pages' => $numPages,
+            ]
+        );
     }
 }
