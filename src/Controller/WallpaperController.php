@@ -187,7 +187,7 @@ class WallpaperController extends AbstractController
         }
 
         if ($runDownloader) {
-            $process = Process::fromShellCommandline('nohup php ./bin/console wallpaper:download > /tmp/downloader.log 2>&1 &', $this->getParameter('kernel.project_dir'), NULL, NULL, $downloaderTimeoutSeconds);
+            $process = Process::fromShellCommandline('nohup php ./bin/console wallpaper:download > /dev/null 2>&1 &', $this->getParameter('kernel.project_dir'), NULL, NULL, $downloaderTimeoutSeconds);
             $process->start();
         }
 

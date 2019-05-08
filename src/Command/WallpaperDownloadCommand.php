@@ -204,7 +204,7 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
                 $output->write('.');
 
                 // Add this wallpaper to the database
-                $wallpaper = new \App\Entity\SubReddit\Wallpaper($subreddit, $item['data']['url']);
+                $wallpaper = new \App\Entity\SubReddit\Wallpaper($subreddit, $item['data']['url'], 'https://reddit.com' . $item['data']['permalink']);
                 $this->doctrine->getManager()->persist($wallpaper);
                 $this->doctrine->getManager()->flush();
 

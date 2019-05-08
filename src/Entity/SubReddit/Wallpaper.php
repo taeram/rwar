@@ -37,11 +37,11 @@ class Wallpaper
      */
     private $rating = 0;
 
-    public function __construct(SubReddit $subreddit, $url)
+    public function __construct(SubReddit $subreddit, $imageUrl, $permaLink)
     {
         $this->subreddit = $subreddit;
-        $this->url = $url;
-        $this->hash = hash('sha256', $url);
+        $this->url = $permaLink;
+        $this->hash = hash('sha256', $imageUrl);
     }
 
     public function getId(): ?int
