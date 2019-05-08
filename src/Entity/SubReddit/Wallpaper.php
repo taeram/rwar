@@ -28,6 +28,11 @@ class Wallpaper
     private $hash;
 
     /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $url;
+
+    /**
      * @ORM\Column(type="integer")
      */
     private $rating = 0;
@@ -66,6 +71,18 @@ class Wallpaper
         $this->hash = $hash;
 
         return $this;
+    }
+
+    public function getUrl(): ?string
+    {
+      return $this->url;
+    }
+
+    public function setUrl(string $url): self
+    {
+      $this->url = $url;
+
+      return $this;
     }
 
     public function getImageUrl() {

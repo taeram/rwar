@@ -4,7 +4,9 @@
 
 {% block body %}
     {% for wallpaper in wallpapers %}
-            <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;"/>
+            <a href="{{ wallpaper.url }}" target="_blank">
+                <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;"/>
+            </a>
             <div style="text-align: center">
                 <a id="link-reject" href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id, return_url: 'wallpaper_favourites', page_num: page_num}) }}">Reject</a>
                 |

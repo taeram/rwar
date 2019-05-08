@@ -32,7 +32,9 @@
     </div>
 
     <div style="text-align: center">
-        <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;"/>
+        <a href="{{ wallpaper.url }}" target="_blank">
+            <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;"/>
+        </a>
         <div id="image-resolution"></div>
     </div>
 {% endblock %}
