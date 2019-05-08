@@ -8,6 +8,7 @@
 /.env.*.local
 /public/bundles/
 /public/subreddits/
+/public/*.lock
 /var/
 /vendor/
 ###< symfony/framework-bundle ###

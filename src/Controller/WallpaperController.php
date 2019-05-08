@@ -7,11 +7,21 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Process\Process;
 use Symfony\Component\Routing\Annotation\Route;
 
 class WallpaperController extends AbstractController
 {
+
+    /**
+     * The path to the downloader lock file
+     *
+     * @var string
+     */
+    protected $downloaderLockFile = '/public/downloader.lock';
+
     /**
      * @Route("/", name="root")
      */
@@ -157,5 +167,49 @@ class WallpaperController extends AbstractController
                 'num_pages' => $numPages,
             ]
         );
+    }
+
+    /**
+     * @Route("/wallpapers/downloader/start", name="wallpaper_downloader_start")
+     */
+    public function downloaderStart(KernelInterface $kernel)
+    {
+        $runDownloader = true;
+        $downloaderTimeoutSeconds = 600;
+        $downloaderLockFile = $this->getParameter('kernel.project_dir') . $this->downloaderLockFile;
+        if (file_exists($downloaderLockFile)) {
+            if (filemtime($downloaderLockFile) < strtotime('now -' . $downloaderTimeoutSeconds . ' seconds')) {
+                // Remove the stale lock file
+                unlink($downloaderLockFile);
+            } else {
+                $runDownloader = false;
+            }
+        }
+
+        if ($runDownloader) {
+            $process = Process::fromShellCommandline('nohup php ./bin/console wallpaper:download > /tmp/downloader.log 2>&1 &', $this->getParameter('kernel.project_dir'), NULL, NULL, $downloaderTimeoutSeconds);
+            $process->start();
+        }
+
+        $response = new Response();
+        $response->setContent("ok");
+        return $response;
+    }
+
+    /**
+     * @Route("/wallpapers/downloader/status", name="wallpaper_downloader_status")
+     */
+    public function downloaderStatus()
+    {
+        $downloaderLockFile = $this->getParameter('kernel.project_dir') . $this->downloaderLockFile;
+        if (file_exists($downloaderLockFile)) {
+            $status = 'Running';
+        } else {
+            $status = 'Stopped';
+        }
+
+        $response = new Response();
+        $response->setContent($status);
+        return $response;
     }
 }

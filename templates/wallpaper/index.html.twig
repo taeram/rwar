@@ -3,30 +3,35 @@
 {% block title %}RWAR!{% endblock %}
 
 {% block body %}
-    <div id="subreddit-name">
-        <label for="subreddit"></label>
-        <select id="subreddit" style="margin-top: 20px">
-            {% for subreddit in subreddits %}
-                <option
-                        value="{{ subreddit.id }}"
-                        {% if subreddit.name == wallpaper.subreddit.name %}
-                    selected="selected"
-                        {% endif %}>
-                    /r/{{ subreddit.name }}
-                </option>
-            {% endfor %}
-        </select>
-        ({{ subreddit_num_unrated }} unrated)
-    </div>
-
-    <div style="margin: -25px auto auto;text-align: center">
-        <div style="text-align: center">
+    <div id="subreddit-toolbar" class="row" style="padding-top: 10px">
+        <div class="col-md-4 text-left">
+            <label for="subreddit"></label>
+            <select id="subreddit">
+                {% for subreddit in subreddits %}
+                    <option
+                            value="{{ subreddit.id }}"
+                            {% if subreddit.name == wallpaper.subreddit.name %}
+                        selected="selected"
+                            {% endif %}>
+                        /r/{{ subreddit.name }}
+                    </option>
+                {% endfor %}
+            </select>
+            ({{ subreddit_num_unrated }} unrated)
+        </div>
+        <div class="col-md-4" style="text-align: center">
             <a id="link-favourite" href="{{ url('wallpaper_favourite', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Favourite (w)</a>
             |
             <a id="link-reject" href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Reject (s)</a>
             |
             <a id="link-set" href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Set (z)</a>
         </div>
+        <div class="col-md-4 text-right">
+            <span class="btn btn-sm btn-dark" id="downloader">Start Downloader</span>
+        </div>
+    </div>
+
+    <div style="text-align: center">
         <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;"/>
         <div id="image-resolution"></div>
     </div>

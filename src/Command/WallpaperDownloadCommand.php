@@ -121,6 +121,9 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
         // Download the latest wallpapers from each subreddit
         $subreddits = $this->doctrine->getRepository(\App\Entity\SubReddit::class)->findAll();
 
+        $downloaderLockFile = $this->publicDir . '/downloader.lock';
+        touch($downloaderLockFile);
+
         foreach ($subreddits as $subreddit) {
             /** @var \App\Entity\SubReddit $subreddit */
             // Create the subreddit image folder
@@ -211,6 +214,9 @@ class WallpaperDownloadCommand extends Command implements ContainerAwareInterfac
             }
         }
         $output->writeln('');
+
+        // Remove the downloader lock file
+        unlink($downloaderLockFile);
 
         return true;
     }

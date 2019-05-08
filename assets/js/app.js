@@ -21,7 +21,7 @@ $(document).ready(function () {
     let $wallpaperImage = $('#wallpaper-image');
     const imageHeight = $wallpaperImage.height();
     let imageWidth = $wallpaperImage.width();
-    const containerHeight = document.documentElement.clientHeight - $('#subreddit-name').height() - $('#image-resolution').height() - 20;
+    const containerHeight = document.documentElement.clientHeight - $('#subreddit-toolbar').height() - $('#image-resolution').height() - 30;
     if (imageHeight > containerHeight) {
         imageWidth = Math.floor((imageWidth / imageHeight) * containerHeight);
         $('#wallpaper-image').css({
@@ -46,5 +46,24 @@ $(document).ready(function () {
         } else if (e.originalEvent.key === 'z') {
             window.location.href = $('#link-set').attr('href');
         }
+    });
+
+    // Is the Downloader running?
+    var checkDownloader = function () {
+        $.get('/wallpapers/downloader/status', function (result) {
+            if (result === 'Running') {
+                $('#downloader').addClass('btn-primary').removeClass('btn-dark').html('Downloader Running');
+            }
+            else {
+                $('#downloader').removeClass('btn-primary').addClass('btn-dark').html('Downloader Stopped');
+            }
+        });
+    };
+    var downloaderInterval = setInterval(checkDownloader, 5000);
+    checkDownloader();
+
+    // Trigger the downloader
+    $('#downloader').on('click', function () {
+        $.get('/wallpapers/downloader/start');
     });
 });
