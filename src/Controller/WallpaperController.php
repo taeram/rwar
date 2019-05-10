@@ -23,6 +23,14 @@ class WallpaperController extends AbstractController
     protected $downloaderLockFile = '/public/downloader.lock';
 
     /**
+     * The download timeout, in seconds.
+     *
+     * @var int
+     */
+    protected $downloaderTimeoutSeconds = 600;
+
+
+  /**
      * @Route("/", name="root")
      */
     public function root($id = null)
@@ -63,12 +71,16 @@ class WallpaperController extends AbstractController
             $wallpaper->getSubreddit()->getId()
         );
 
+        // Are we currently downloading wallpapers?
+        $downloaderLockFile = $this->getParameter('kernel.project_dir') . $this->downloaderLockFile;
+
         return $this->render(
             'wallpaper/index.html.twig',
             [
                 'subreddits' => $this->getDoctrine()->getRepository(\App\Entity\SubReddit::class)->findAll(),
                 'subreddit_num_unrated' => $subredditNumUnrated,
                 'wallpaper' => $wallpaper,
+                'is_downloading' => file_exists($downloaderLockFile),
             ]
         );
     }
@@ -174,22 +186,8 @@ class WallpaperController extends AbstractController
      */
     public function downloaderStart(KernelInterface $kernel)
     {
-        $runDownloader = true;
-        $downloaderTimeoutSeconds = 600;
-        $downloaderLockFile = $this->getParameter('kernel.project_dir') . $this->downloaderLockFile;
-        if (file_exists($downloaderLockFile)) {
-            if (filemtime($downloaderLockFile) < strtotime('now -' . $downloaderTimeoutSeconds . ' seconds')) {
-                // Remove the stale lock file
-                unlink($downloaderLockFile);
-            } else {
-                $runDownloader = false;
-            }
-        }
-
-        if ($runDownloader) {
-            $process = Process::fromShellCommandline('nohup php ./bin/console wallpaper:download > /dev/null 2>&1 &', $this->getParameter('kernel.project_dir'), NULL, NULL, $downloaderTimeoutSeconds);
-            $process->start();
-        }
+        $process = Process::fromShellCommandline('nohup php ./bin/console wallpaper:download > /dev/null 2>&1 &', $this->getParameter('kernel.project_dir'), NULL, NULL, $this->downloaderTimeoutSeconds);
+        $process->start();
 
         $response = new Response();
         $response->setContent("ok");
@@ -202,6 +200,12 @@ class WallpaperController extends AbstractController
     public function downloaderStatus()
     {
         $downloaderLockFile = $this->getParameter('kernel.project_dir') . $this->downloaderLockFile;
+
+        // Remove a stale lock file
+        if (file_exists($downloaderLockFile) && filemtime($downloaderLockFile) < strtotime('now -' . $this->downloaderTimeoutSeconds . ' seconds')) {
+            unlink($downloaderLockFile);
+        }
+
         if (file_exists($downloaderLockFile)) {
             $status = 'Running';
         } else {

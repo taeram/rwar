@@ -27,7 +27,11 @@
             <a id="link-set" href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Set (z)</a>
         </div>
         <div class="col-md-4 text-right">
-            <span class="btn btn-sm btn-dark" id="downloader">Downloader Stopped</span>
+            {% if is_downloading %}
+                <span class="btn btn-sm btn-primary" id="downloader">Downloader Running</span>
+            {% else %}
+                <span class="btn btn-sm btn-dark" id="downloader">Downloader Stopped</span>
+            {% endif %}
         </div>
     </div>
 

@@ -64,6 +64,8 @@ $(document).ready(function () {
 
     // Trigger the downloader
     $('#downloader').on('click', function () {
-        $.get('/wallpapers/downloader/start');
+        if ($('#downloader.btn-dark').length > 0) {
+            $.get('/wallpapers/downloader/start');
+        }
     });
 });
