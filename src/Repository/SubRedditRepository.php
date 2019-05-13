@@ -65,4 +65,18 @@ class SubRedditRepository extends ServiceEntityRepository
 
         return $subreddits[random_int(0, count($subreddits) - 1)];
     }
+
+    /**
+     * Find all subreddits that have unrated wallpapers.
+     *
+     * @return array|null
+     *
+     * @throws \Exception
+     */
+    public function findAllWithUnrated()
+    {
+        return $this->getUnratedQueryBuilder()
+          ->getQuery()
+          ->getResult();
+    }
 }
