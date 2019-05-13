@@ -41,9 +41,11 @@ $(document).ready(function () {
     $(document).bind('keydown', null, function (e) {
         if (e.originalEvent.key === 'w') {
             window.location.href = $('#link-favourite').attr('href');
-        } else if (e.originalEvent.key === 's') {
+        }
+        else if (e.originalEvent.key === 's') {
             window.location.href = $('#link-reject').attr('href');
-        } else if (e.originalEvent.key === 'z') {
+        }
+        else if (e.originalEvent.key === 'z') {
             window.location.href = $('#link-set').attr('href');
         }
     });

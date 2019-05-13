@@ -20,11 +20,16 @@
             ({{ subreddit_num_unrated }} unrated)
         </div>
         <div class="col-md-4" style="text-align: center">
-            <a id="link-favourite" href="{{ url('wallpaper_favourite', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Favourite (w)</a>
+            <a id="link-favourite"
+               href="{{ url('wallpaper_favourite', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Favourite
+                (w)</a>
             |
-            <a id="link-reject" href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Reject (s)</a>
+            <a id="link-reject"
+               href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Reject
+                (s)</a>
             |
-            <a id="link-set" href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Set (z)</a>
+            <a id="link-set" href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Set
+                (z)</a>
         </div>
         <div class="col-md-4 text-right">
             {% if is_downloading %}
@@ -37,7 +42,8 @@
 
     <div style="text-align: center">
         <a href="{{ wallpaper.url }}" target="_blank">
-            <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}" style="width: 100%; padding: 10px;"/>
+            <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}"
+                 style="width: 100%; padding: 10px;"/>
         </a>
         <div id="image-resolution"></div>
     </div>
