@@ -95,7 +95,7 @@ class WallpaperController extends AbstractController
           [
             'subreddits' => $this->getDoctrine()
               ->getRepository(\App\Entity\SubReddit::class)
-              ->findAllWithUnrated(),
+              ->findAll(),
             'subreddit_num_unrated' => $subredditNumUnrated,
             'wallpaper' => $wallpaper,
             'is_downloading' => file_exists($downloaderLockFile),

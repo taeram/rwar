@@ -81,4 +81,15 @@ class SubReddit
 
         return $this;
     }
+
+    public function getNumUnrated() {
+        $numUnratedWallpapers = count($this->wallpapers);
+        foreach ($this->wallpapers as $wallpaper) {
+            if ($wallpaper->getRating() !== 0) {
+                $numUnratedWallpapers--;
+            }
+        }
+
+        return $numUnratedWallpapers;
+    }
 }
