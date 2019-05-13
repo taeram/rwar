@@ -10,8 +10,7 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Wallpaper|null find($id, $lockMode = null, $lockVersion = null)
  * @method Wallpaper|null findOneBy(array $criteria, array $orderBy = null)
  * @method Wallpaper[]    findAll()
- * @method Wallpaper[]    findBy(array $criteria, array $orderBy = null, $limit
- *   = null, $offset = null)
+ * @method Wallpaper[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
  */
 class WallpaperRepository extends ServiceEntityRepository
 {
