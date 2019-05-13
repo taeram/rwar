@@ -21,7 +21,14 @@ $(document).ready(function () {
     let $wallpaperImage = $('#wallpaper-image');
     const imageHeight = $wallpaperImage.height();
     let imageWidth = $wallpaperImage.width();
-    const containerHeight = document.documentElement.clientHeight - $('#subreddit-toolbar').height() - $('#image-resolution').height() - 30;
+    const containerHeight = document.documentElement.clientHeight -
+        $('#subreddit-toolbar').height() -
+        parseInt($('#subreddit-toolbar').css('paddingTop')) -
+        parseInt($('#subreddit-toolbar').css('paddingBottom')) -
+        parseInt($('#wallpaper-image').css('paddingTop')) -
+        parseInt($('#wallpaper-image').css('paddingBottom')) -
+        $('#image-source').height() -
+        $('#image-resolution').height();
     if (imageHeight > containerHeight) {
         imageWidth = Math.floor((imageWidth / imageHeight) * containerHeight);
         $('#wallpaper-image').css({
