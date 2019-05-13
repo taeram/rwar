@@ -10,10 +10,12 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method Wallpaper|null find($id, $lockMode = null, $lockVersion = null)
  * @method Wallpaper|null findOneBy(array $criteria, array $orderBy = null)
  * @method Wallpaper[]    findAll()
- * @method Wallpaper[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method Wallpaper[]    findBy(array $criteria, array $orderBy = null, $limit
+ *   = null, $offset = null)
  */
 class WallpaperRepository extends ServiceEntityRepository
 {
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, Wallpaper::class);
@@ -22,42 +24,44 @@ class WallpaperRepository extends ServiceEntityRepository
     public function findByUrl($url)
     {
         return $this->createQueryBuilder('Wallpaper')
-            ->andWhere('Wallpaper.hash = :hash')
-            ->setParameter('hash', hash('sha256', $url))
-            ->getQuery()
-            ->getOneOrNullResult();
+          ->andWhere('Wallpaper.hash = :hash')
+          ->setParameter('hash', hash('sha256', $url))
+          ->getQuery()
+          ->getOneOrNullResult();
     }
 
     public function findFirstUnrated($id)
     {
         $query = $this->createQueryBuilder('Wallpaper')
-            ->andWhere('Wallpaper.rating = 0');
+          ->andWhere('Wallpaper.rating = 0');
 
         if ($id !== null) {
             $query->andWhere('Wallpaper.subreddit = :subredditId')
-                ->setParameter('subredditId', $id);
+              ->setParameter('subredditId', $id);
         }
 
         return $query->setMaxResults(1)
-            ->getQuery()
-            ->getOneOrNullResult();
+          ->getQuery()
+          ->getOneOrNullResult();
     }
 
-    public function findCountFavourites() {
+    public function findCountFavourites()
+    {
         return $this->createQueryBuilder('Wallpaper')
-            ->select('COUNT(Wallpaper.id)')
-            ->andWhere('Wallpaper.rating = 1')
-            ->getQuery()
-            ->getSingleScalarResult();
+          ->select('COUNT(Wallpaper.id)')
+          ->andWhere('Wallpaper.rating = 1')
+          ->getQuery()
+          ->getSingleScalarResult();
     }
 
-    public function findAllFavourites($pageNum, $wallpapersPerPage) {
+    public function findAllFavourites($pageNum, $wallpapersPerPage)
+    {
         return $this->createQueryBuilder('Wallpaper')
-            ->andWhere('Wallpaper.rating = 1')
-            ->orderBy('Wallpaper.id', 'DESC')
-            ->getQuery()
-            ->setFirstResult(($pageNum - 1 ) * $wallpapersPerPage)
-            ->setMaxResults($wallpapersPerPage)
-            ->getResult();
+          ->andWhere('Wallpaper.rating = 1')
+          ->orderBy('Wallpaper.id', 'DESC')
+          ->getQuery()
+          ->setFirstResult(($pageNum - 1) * $wallpapersPerPage)
+          ->setMaxResults($wallpapersPerPage)
+          ->getResult();
     }
 }

@@ -10,10 +10,12 @@ use Symfony\Bridge\Doctrine\RegistryInterface;
  * @method SubReddit|null find($id, $lockMode = null, $lockVersion = null)
  * @method SubReddit|null findOneBy(array $criteria, array $orderBy = null)
  * @method SubReddit[]    findAll()
- * @method SubReddit[]    findBy(array $criteria, array $orderBy = null, $limit = null, $offset = null)
+ * @method SubReddit[]    findBy(array $criteria, array $orderBy = null, $limit
+ *   = null, $offset = null)
  */
 class SubRedditRepository extends ServiceEntityRepository
 {
+
     public function __construct(RegistryInterface $registry)
     {
         parent::__construct($registry, SubReddit::class);
@@ -22,8 +24,11 @@ class SubRedditRepository extends ServiceEntityRepository
     protected function getUnratedQueryBuilder()
     {
         return $this->createQueryBuilder('SubReddit')
-            ->leftJoin('SubReddit.wallpapers', 'Wallpaper')
-            ->andWhere('Wallpaper.rating = 0');
+          ->leftJoin(
+            'SubReddit.wallpapers',
+            'Wallpaper'
+          )
+          ->andWhere('Wallpaper.rating = 0');
     }
 
     /**
@@ -38,11 +43,11 @@ class SubRedditRepository extends ServiceEntityRepository
     public function findCountUnrated($id): ?int
     {
         return $this->getUnratedQueryBuilder()
-            ->select('COUNT(Wallpaper.id)')
-            ->andWhere('SubReddit.id = :subredditId')
-            ->setParameter('subredditId', $id)
-            ->getQuery()
-            ->getSingleScalarResult();
+          ->select('COUNT(Wallpaper.id)')
+          ->andWhere('SubReddit.id = :subredditId')
+          ->setParameter('subredditId', $id)
+          ->getQuery()
+          ->getSingleScalarResult();
     }
 
     /**
@@ -55,9 +60,11 @@ class SubRedditRepository extends ServiceEntityRepository
     public function findRandomUnrated()
     {
         $subreddits = $this->getUnratedQueryBuilder()
-            ->select('DISTINCT SubReddit')
-            ->getQuery()
-            ->getResult();
+          ->select(
+            'DISTINCT SubReddit'
+          )
+          ->getQuery()
+          ->getResult();
 
         if (count($subreddits) === 0) {
             return null;
