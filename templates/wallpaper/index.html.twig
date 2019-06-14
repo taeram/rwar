@@ -56,7 +56,7 @@
             <div id="image-source">
                 {% if wallpaper.url|length > 0 %}
                     <a href="{{ wallpaper.url }}" target="_blank">
-                        {{ wallpaper.url }}
+                        {{ wallpaper.url|replace({'https://reddit.com/': ''}) }}
                     </a>
                 {% endif %}
             </div>
