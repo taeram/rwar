@@ -2,68 +2,57 @@
 
 {% block title %}RWAR!{% endblock %}
 
+{% block toolbar %}
+    {% if wallpaper %}
+    <span style="display: inline-block">
+        <a id="link-favourite"
+           href="{{ url('wallpaper_favourite', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Favourite
+            (w)
+        </a>
+        |
+        <a id="link-reject"
+           href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Reject
+            (s)
+        </a>
+        |
+        <a id="link-set"
+           href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Set
+            (z)
+        </a>
+    </span>
+    {% endif %}
+{% endblock %}
+
+{% block sidebar %}
+    {% for subreddit in subreddits %}
+        {% set numUnratedWallpapers = subreddit.numUnrated %}
+        {% if numUnratedWallpapers > 0 %}
+            <a href="{{ url('wallpaper', {id: subreddit.id}) }}"
+                    {% if subreddit.id == wallpaper.subreddit.id %}
+                        style="font-weight: bold"
+                    {% endif %}
+            >
+                /r/{{ subreddit.name }}
+            </a> ({{ numUnratedWallpapers }})<br>
+        {% else %}
+            /r/{{ subreddit.name }}<br>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
 {% block body %}
-    <div id="subreddit-toolbar" class="row" style="padding-top: 10px">
-        <div class="col-md-12" style="text-align: center">
-            <span style="display: inline-block">
-                <a id="link-favourite"
-                   href="{{ url('wallpaper_favourite', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Favourite
-                    (w)
+    {% if not wallpaper %}
+        <strong>No wallpapers found, please start the Downloader</strong>
+    {% else %}
+        <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}"
+             style="width: 100%; padding: 10px;"/>
+        <div id="image-source">
+            {% if wallpaper.url|length > 0 %}
+                <a href="{{ wallpaper.url }}" target="_blank">
+                    {{ wallpaper.title }}
                 </a>
-                |
-                <a id="link-reject"
-                   href="{{ url('wallpaper_reject', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Reject
-                    (s)
-                </a>
-                |
-                <a id="link-set"
-                   href="{{ url('wallpaper_set', {id: wallpaper.id, subredditId: wallpaper.subreddit.id}) }}">Set
-                    (z)
-                </a>
-            </span>
-        </div>
-    </div>
-
-    <div class="row">
-        <div class="col-md-2">
-            <h2>Subreddits</h2>
-            {% for subreddit in subreddits %}
-                {% set numUnratedWallpapers = subreddit.numUnrated %}
-                {% if numUnratedWallpapers > 0 %}
-                    <a href="{{ url('wallpaper', {id: subreddit.id}) }}"
-                            {% if subreddit.id == wallpaper.subreddit.id %}
-                                style="font-weight: bold"
-                            {% endif %}
-                    >
-                        /r/{{ subreddit.name }}
-                    </a> ({{ subreddit.numUnrated }})<br>
-                {% else %}
-                    /r/{{ subreddit.name }}<br>
-                {% endif %}
-            {% endfor %}
-            <br>
-            <a href="/admin/app/subreddit/list">Manage Subreddits</a>
-        </div>
-
-        <div style="position: absolute; bottom: 10px; left: 10px">
-            {% if is_downloading %}
-                <span class="btn btn-sm btn-primary" id="downloader">Downloader Running</span>
-            {% else %}
-                <span class="btn btn-sm btn-dark" id="downloader">Downloader Stopped</span>
             {% endif %}
         </div>
-
-        <div class="col-md-8" style="text-align: center">
-            <img alt="wallpaper" id="wallpaper-image" src="{{ wallpaper.imageUrl }}"
-                 style="width: 100%; padding: 10px;"/>
-            <div id="image-source">
-                {% if wallpaper.url|length > 0 %}
-                    <a href="{{ wallpaper.url }}" target="_blank">
-                        {{ wallpaper.title }}
-                    </a>
-                {% endif %}
-            </div>
-            <div id="image-resolution"></div>
-        </div>
-    </div>
+        <div id="image-resolution"></div>
+    {% endif %}
 {% endblock %}

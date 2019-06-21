@@ -2,6 +2,21 @@
 
 {% block title %}RWAR!{% endblock %}
 
+{% block toolbar %}
+    <h4>Favourites</h4>
+{% endblock %}
+
+{% block sidebar %}
+    {% for subreddit in subreddits %}
+        /r/{{ subreddit.name }}
+        {% set numFavourites = subreddit.numFavourites %}
+        {% if numFavourites > 0 %}
+            ({{ numFavourites }})
+        {% endif %}
+        <br>
+    {% endfor %}
+{% endblock %}
+
 {% block body %}
     {% for wallpaper in wallpapers %}
         <a href="{{ wallpaper.url }}" target="_blank">

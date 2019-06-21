@@ -29,6 +29,17 @@ class WallpaperController extends AbstractController
      */
     protected $downloaderTimeoutSeconds = 600;
 
+    /**
+     * Are we currently downloading wallpapers?
+     *
+     * @return bool
+     */
+    protected function isDownloading()
+    {
+        return file_exists($this->getParameter(
+            'kernel.project_dir'
+          ).$this->downloaderLockFile);
+    }
 
     /**
      * @Route("/", name="root")
@@ -46,14 +57,23 @@ class WallpaperController extends AbstractController
      */
     public function index($id = null)
     {
+        $subreddits = $this->getDoctrine()
+          ->getRepository(\App\Entity\SubReddit::class)
+          ->findAll();
+
         // Select a random subreddit
         if ($id === null) {
             $subreddit = $this->getDoctrine()
               ->getRepository(\App\Entity\SubReddit::class)
               ->findRandomUnrated();
             if (!$subreddit) {
-                throw new \Exception(
-                  'No unrated wallpapers found, please run ./bin/console wallpaper:download'
+                return $this->render(
+                  'wallpaper/index.html.twig',
+                  [
+                    'subreddits' => $subreddits,
+                    'wallpaper' => null,
+                    'is_downloading' => $this->isDownloading(),
+                  ]
                 );
             }
 
@@ -78,17 +98,6 @@ class WallpaperController extends AbstractController
         if (!$wallpaper) {
             return $this->redirectToRoute('wallpaper');
         }
-        $subredditNumUnrated = $this->getDoctrine()
-          ->getRepository(\App\Entity\SubReddit::class)
-          ->findCountUnrated(
-            $wallpaper->getSubreddit()
-              ->getId()
-          );
-
-        // Are we currently downloading wallpapers?
-        $downloaderLockFile = $this->getParameter(
-            'kernel.project_dir'
-          ).$this->downloaderLockFile;
 
         return $this->render(
           'wallpaper/index.html.twig',
@@ -96,9 +105,8 @@ class WallpaperController extends AbstractController
             'subreddits' => $this->getDoctrine()
               ->getRepository(\App\Entity\SubReddit::class)
               ->findAll(),
-            'subreddit_num_unrated' => $subredditNumUnrated,
             'wallpaper' => $wallpaper,
-            'is_downloading' => file_exists($downloaderLockFile),
+            'is_downloading' => $this->isDownloading(),
           ]
         );
     }
@@ -221,14 +229,18 @@ class WallpaperController extends AbstractController
             $pageNum,
             $wallpapersPerPage
           );
-
+        $subreddits = $this->getDoctrine()
+          ->getRepository(\App\Entity\SubReddit::class)
+          ->findAll();
 
         return $this->render(
           'wallpaper/favourites.html.twig',
           [
+            'subreddits' => $subreddits,
             'wallpapers' => $wallpapers,
             'page_num' => $pageNum,
             'num_pages' => $numPages,
+            'is_downloading' => $this->isDownloading(),
           ]
         );
     }

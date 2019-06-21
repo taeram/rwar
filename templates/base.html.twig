@@ -21,7 +21,33 @@
 <![endif]-->
 <main role="main" class="flex-shrink-0">
     <div class="container-fluid">
-        {% block body %}{% endblock %}
+        <div id="subreddit-toolbar" class="row" style="padding-top: 10px">
+            <div class="col-md-12" style="text-align: center; min-height: 20px">
+                {% block toolbar %}{% endblock %}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-2">
+                <h4>Subreddits</h4>
+                {% block sidebar %}{% endblock %}
+                <a href="/admin/app/subreddit/list">Manage Subreddits</a><br/>
+                <a href="{{ url('wallpaper') }}">Browse</a><br>
+                <a href="{{ url('wallpaper_favourites') }}">Favourites</a>
+            </div>
+
+            <div style="position: absolute; bottom: 10px; left: 10px">
+                {% if is_downloading %}
+                    <span class="btn btn-sm btn-primary" id="downloader">Downloader Running</span>
+                {% else %}
+                    <span class="btn btn-sm btn-dark" id="downloader">Downloader Stopped</span>
+                {% endif %}
+            </div>
+
+            <div class="col-md-8" style="text-align: center">
+                {% block body %}{% endblock %}
+            </div>
+        </div>
     </div>
 </main>
 {% block javascripts %}
