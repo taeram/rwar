@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Wallpaper
 {
+
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -37,11 +38,21 @@ class Wallpaper
      */
     private $rating = 0;
 
-    public function __construct(SubReddit $subreddit, $imageUrl, $permaLink)
-    {
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $title;
+
+    public function __construct(
+      SubReddit $subreddit,
+      $imageUrl,
+      $permaLink,
+      $title
+    ) {
         $this->subreddit = $subreddit;
         $this->url = $permaLink;
         $this->hash = hash('sha256', $imageUrl);
+        $this->title = $title;
     }
 
     public function getId(): ?int
@@ -75,18 +86,19 @@ class Wallpaper
 
     public function getUrl(): ?string
     {
-      return $this->url;
+        return $this->url;
     }
 
     public function setUrl(string $url): self
     {
-      $this->url = $url;
+        $this->url = $url;
 
-      return $this;
+        return $this;
     }
 
-    public function getImageUrl() {
-        return '/subreddits/' . $this->subreddit->getName() . '/' . $this->hash;
+    public function getImageUrl()
+    {
+        return '/subreddits/'.$this->subreddit->getName().'/'.$this->hash;
     }
 
     public function getRating(): ?int
@@ -101,4 +113,15 @@ class Wallpaper
         return $this;
     }
 
+    public function getTitle(): ?string
+    {
+        return $this->title;
+    }
+
+    public function setTitle(string $title): self
+    {
+        $this->title = $title;
+
+        return $this;
+    }
 }

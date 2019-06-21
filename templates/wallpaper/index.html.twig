@@ -26,6 +26,7 @@
 
     <div class="row">
         <div class="col-md-2">
+            <h2>Subreddits</h2>
             {% for subreddit in subreddits %}
                 {% set numUnratedWallpapers = subreddit.numUnrated %}
                 {% if numUnratedWallpapers > 0 %}
@@ -40,6 +41,8 @@
                     /r/{{ subreddit.name }}<br>
                 {% endif %}
             {% endfor %}
+            <br>
+            <a href="/admin/app/subreddit/list">Manage Subreddits</a>
         </div>
 
         <div style="position: absolute; bottom: 10px; left: 10px">
@@ -56,7 +59,7 @@
             <div id="image-source">
                 {% if wallpaper.url|length > 0 %}
                     <a href="{{ wallpaper.url }}" target="_blank">
-                        {{ wallpaper.url|replace({'https://reddit.com/': ''}) }}
+                        {{ wallpaper.title }}
                     </a>
                 {% endif %}
             </div>
