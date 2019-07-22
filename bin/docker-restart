@@ -1,0 +1,22 @@
+#!/bin/bash
+
+script_dir=$( dirname $( greadlink -f $0 ) )
+
+has_container=$( docker ps -a | grep rwar | wc -l | awk '{print $1}' )
+if [[ $has_container -eq 1 ]]; then
+    docker stop rwar || true
+    docker rm rwar
+fi
+
+if [[ "$1" = "build" ]]; then
+    docker build \
+        --tag=rwar:latest \
+        $script_dir
+fi
+
+docker run \
+    --name=rwar \
+    --detach \
+    --publish 8080:80 \
+    --volume $script_dir/../:/var/www/html \
+    rwar:latest
