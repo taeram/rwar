@@ -6,4 +6,7 @@ if [[ -z $( which yarn ) ]]; then
 fi
 
 yarn encore dev
-yarn encore dev --watch
+
+if [[ "$1" != "once" ]]; then
+    yarn encore dev --watch
+fi

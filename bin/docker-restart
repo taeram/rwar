@@ -1,5 +1,10 @@
 #!/bin/bash
 
+scriptDir=$( dirname $( greadlink -f $0 ) )
+
 docker-compose pull
 docker-compose up --no-start --remove-orphans
 docker-compose start
+
+$scriptDir/docker-compile-assets once
+

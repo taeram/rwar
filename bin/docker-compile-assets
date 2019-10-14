@@ -8,4 +8,4 @@ docker run \
     --workdir /var/www/html \
     --volume $scriptDir/../:/var/www/html \
     node:lts-alpine \
-    sh /var/www/html/bin/container-scripts/compile-assets
+    sh /var/www/html/bin/container-scripts/compile-assets $1
