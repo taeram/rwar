@@ -58,8 +58,15 @@ $(document).ready(function () {
     });
 
     // Is the Downloader running?
+    var isCheckDownloaderWaiting = false;
     var checkDownloader = function () {
+        if (isCheckDownloaderWaiting === true) {
+            return;
+        }
+
+        isCheckDownloaderWaiting = true;
         $.get('/wallpapers/downloader/status', function (result) {
+            isCheckDownloaderWaiting = false;
             if (result === 'Running') {
                 $('#downloader').addClass('btn-primary').removeClass('btn-dark').html('Downloader Running');
             }

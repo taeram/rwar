@@ -1,17 +1,5 @@
 #!/bin/bash
 
-script_dir=$( dirname $( greadlink -f $0 ) )
-
-has_container=$( docker ps -a | grep rwar | wc -l | awk '{print $1}' )
-if [[ $has_container -eq 1 ]]; then
-    docker stop rwar || true
-    docker rm rwar
-fi
-
-docker run \
-    --name=rwar \
-    --detach \
-    --publish 8080:80 \
-    --env APACHE_DOCUMENT_ROOT=/var/www/html/public \
-    --volume $script_dir/../:/var/www/html \
-    radpenguin/php-apache:latest
+docker-compose pull
+docker-compose up --no-start --remove-orphans
+docker-compose start

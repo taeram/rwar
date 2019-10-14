@@ -1,0 +1,11 @@
+#!/bin/bash
+
+scriptDir=$( dirname $( greadlink -f $0 ) )
+
+docker run \
+    -it \
+    --rm \
+    --workdir /var/www/html \
+    --volume $scriptDir/../:/var/www/html \
+    node:lts-alpine \
+    sh /var/www/html/bin/container-scripts/compile-assets

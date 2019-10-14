@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [[ -z $( which yarn ) ]]; then
+    npm install -g yarn
+    yarn install
+fi
+
+yarn encore dev
+yarn encore dev --watch
