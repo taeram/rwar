@@ -13,7 +13,7 @@ services:
             - "traefik.docker.network=traefik"
             - "traefik.frontend.rule=Host:rwar.docker"
             - "traefik.frontend.entryPoints=http,https"
-            - "traefik.port=8080"
+            - "traefik.port=80"
             - "traefik.protocol=http"
         networks:
             - default
@@ -22,12 +22,6 @@ services:
         restart: always
         volumes:
             - ./:/var/www/html
-            - rwar_node_modules:/var/www/html/node_modules
-            - rwar_vendor:/var/www/html/vendor
-
-volumes:
-    rwar_node_modules:
-    rwar_vendor:
 
 networks:
     traefik:
