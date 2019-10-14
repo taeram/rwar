@@ -8,15 +8,10 @@ if [[ $has_container -eq 1 ]]; then
     docker rm rwar
 fi
 
-if [[ "$1" = "build" ]]; then
-    docker build \
-        --tag=rwar:latest \
-        $script_dir
-fi
-
 docker run \
     --name=rwar \
     --detach \
     --publish 8080:80 \
+    --env APACHE_DOCUMENT_ROOT=/var/www/html/public \
     --volume $script_dir/../:/var/www/html \
-    rwar:latest
+    radpenguin/php-apache:latest
