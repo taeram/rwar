@@ -19,7 +19,7 @@ services:
             - default
             - traefik
         privileged: true
-        restart: always
+        restart: unless-stopped
         volumes:
             - ./:/var/www/html
 
